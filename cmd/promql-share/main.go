@@ -48,7 +48,7 @@ func main() {
 	proxy := httputil.NewSingleHostReverseProxy(prometheus)
 	r.PathPrefix("/static/").Handler(application.PrometheusHandler(logger, proxy)).Methods("GET")
 	r.PathPrefix("/api/v1/").Handler(application.PrometheusHandler(logger, proxy)).Methods("GET")
-	r.PathPrefix("/graph").Handler(application.PrometheusHandler(logger, proxy)).Methods("GET")
+	r.PathPrefix("/graph").Handler(http.FileServer(http.Dir("./web/template/"))).Methods("GET")
 
 	r.HandleFunc("/share", application.NewShareHandler(logger)).Methods("POST")
 	r.HandleFunc("/share/{shareID:[0-9a-zA-Z]+}", application.GetShareHandler(logger)).Methods("GET")
