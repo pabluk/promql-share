@@ -38,13 +38,13 @@ func GetShareHandler(logger *logrus.Logger) http.HandlerFunc {
 	}
 }
 
-func GoToShareHandler(logger *logrus.Logger) http.HandlerFunc {
+func GoToShareHandler(logger *logrus.Logger, base_url string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var share Share
 		params := mux.Vars(r)
 		logger.Info("Redirection for shareID: ", params["shareID"])
 		share.ID = params["shareID"]
 		share.Query = "graph?key=value"
-		http.Redirect(w, r, "https://localhost:8080/"+share.Query, 301)
+		http.Redirect(w, r, base_url+share.Query, 301)
 	}
 }

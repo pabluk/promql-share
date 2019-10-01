@@ -31,6 +31,11 @@ func main() {
 		logger.Fatal("Port is not provided")
 	}
 
+	base_url, exists := os.LookupEnv("BASE_URL")
+	if !exists {
+		base_url = "http://localhost:" + port + "/"
+	}
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", application.HomeHandler(logger))
 
@@ -44,7 +49,7 @@ func main() {
 	r.HandleFunc("/healthz", diagnostics.LivenessHandler(logger))
 	r.HandleFunc("/readyz", diagnostics.ReadinessHandler(logger))
 
-	r.HandleFunc("/{shareID:[0-9a-zA-Z]+}", application.GoToShareHandler(logger)).Methods("GET")
+	r.HandleFunc("/{shareID:[0-9a-zA-Z]+}", application.GoToShareHandler(logger, base_url)).Methods("GET")
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
